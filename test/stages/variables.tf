@@ -79,3 +79,7 @@ variable "git_repo" {
 variable "gitops_namespace" {
   default = "openshift-gitops"
 }
+
+variable "vpc_subnet_count" {
+  default = 1
+}

@@ -3,6 +3,8 @@ locals {
   tmp_dir = "${path.cwd}/.tmp"
   source_init_script_file = "${path.module}/scripts/init-argocd.sh"
   dest_init_script_file = "${local.tmp_dir}/scripts/init-argocd.sh"
+  subnets = [ var.vpc_subnets[0] ]
+  subnet_count = 1
 }
 
 resource null_resource setup_init_script {
@@ -37,8 +39,8 @@ module "vsi-instance" {
   region               = var.region
   ibmcloud_api_key     = var.ibmcloud_api_key
   vpc_name             = var.vpc_name
-  vpc_subnet_count     = var.vpc_subnet_count
-  vpc_subnets          = var.vpc_subnets
+  vpc_subnet_count     = local.subnet_count
+  vpc_subnets          = local.subnets
   image_name           = var.image_name
   profile_name         = var.profile_name
   kms_key_crn          = var.kms_key_crn
