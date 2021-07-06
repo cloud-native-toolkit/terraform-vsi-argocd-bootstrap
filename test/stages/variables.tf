@@ -83,3 +83,7 @@ variable "gitops_namespace" {
 variable "vpc_subnet_count" {
   default = 1
 }
+
+variable "vpc_name" {
+  default = ""
+}
