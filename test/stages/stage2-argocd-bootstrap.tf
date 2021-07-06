@@ -1,6 +1,8 @@
 module "argocd-bootstrap" {
   source = "./module"
 
+  ibmcloud_api_key    = var.ibmcloud_api_key
+  resource_group_id   = module.resource_group.id
   cluster_type        = module.dev_cluster.platform.type_code
   ingress_subdomain   = module.dev_cluster.platform.ingress
   cluster_config_file = module.dev_cluster.config_file_path
