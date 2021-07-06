@@ -2,7 +2,7 @@
 locals {
   tmp_dir = "${path.cwd}/.tmp"
   source_init_script_file = "${path.module}/scripts/init-argocd.sh"
-  dest_init_script_file = "${tmp_dir}/scripts/init-argocd.sh"
+  dest_init_script_file = "${local.tmp_dir}/scripts/init-argocd.sh"
 }
 
 resource null_resource setup_init_script {
