@@ -47,7 +47,7 @@ resource null_resource print_init_script {
 }
 
 module "vsi-instance" {
-  source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-vsi.git?ref=v1.7.1"
+  source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-vsi.git?ref=v1.8.1"
 
   resource_group_id    = var.resource_group_id
   region               = var.region
