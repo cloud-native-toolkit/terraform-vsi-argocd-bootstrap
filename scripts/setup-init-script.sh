@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
-SOURCE_FILE="$1"
-OUTPUT_FILE="$2"
+SCRIPT_DIR=$(cd $(dirname "$0"); pwd -P)
+MODULE_DIR=$(cd "${SCRIPT_DIR}/.."; pwd -P)
+
+OUTPUT_FILE="$1"
 
 OUTPUT_DIR=$(dirname "${OUTPUT_FILE}")
 mkdir -p "${OUTPUT_DIR}"
+
+SOURCE_FILE="${MODULE_DIR}/scripts/init-argocd.sh"
+
+set -x
 
 cat "${SOURCE_FILE}" | \
   sed "s/ENV_IBMCLOUD_API_KEY/${IBMCLOUD_API_KEY}/g" | \
