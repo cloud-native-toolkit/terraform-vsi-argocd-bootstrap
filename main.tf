@@ -1,7 +1,6 @@
 
 locals {
   tmp_dir = "${path.cwd}/.tmp"
-  source_init_script_file = "${path.module}/scripts/init-argocd.sh"
   dest_init_script_file = "${local.tmp_dir}/scripts/init-argocd.sh"
   subnets = [ var.vpc_subnets[0] ]
   subnet_count = 1
@@ -22,7 +21,7 @@ resource null_resource setup_init_script {
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/scripts/setup-init-script.sh ${local.source_init_script_file} ${local.dest_init_script_file}"
+    command = "${path.module}/scripts/setup-init-script.sh ${local.dest_init_script_file}"
 
     environment = {
       IBMCLOUD_API_KEY = var.ibmcloud_api_key
