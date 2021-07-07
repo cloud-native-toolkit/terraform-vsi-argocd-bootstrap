@@ -3,7 +3,7 @@
 SOURCE_FILE="$1"
 OUTPUT_FILE="$2"
 
-OUTPUT_DIR=$(cd $(dirname "${OUTPUT_FILE}"); pwd -P)
+OUTPUT_DIR=$(dirname "${OUTPUT_FILE}")
 mkdir -p "${OUTPUT_DIR}"
 
 cat "${SOURCE_FILE}" | \

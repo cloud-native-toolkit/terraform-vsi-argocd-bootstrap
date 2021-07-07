@@ -8,9 +8,11 @@ locals {
   security_group_rules = [{
     name = "ingress-everything"
     direction = "inbound"
+    remote = "0.0.0.0/0"
   }, {
     name = "egress-everything"
     direction = "outbound"
+    remote = "0.0.0.0/0"
   }]
 }
 
