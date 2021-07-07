@@ -5,6 +5,13 @@ locals {
   dest_init_script_file = "${local.tmp_dir}/scripts/init-argocd.sh"
   subnets = [ var.vpc_subnets[0] ]
   subnet_count = 1
+  security_group_rules = [{
+    name = "ingress-everything"
+    direction = "inbound"
+  }, {
+    name = "egress-everything"
+    direction = "outbound"
+  }]
 }
 
 resource null_resource setup_init_script {
@@ -32,6 +39,12 @@ data local_file init_script {
   filename = local.dest_init_script_file
 }
 
+resource null_resource print_init_script {
+  provisioner "local-exec" {
+    command = "echo 'Init script: ${data.local_file.init_script.content}'"
+  }
+}
+
 module "vsi-instance" {
   source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-vsi.git?ref=v1.7.1"
 
@@ -50,5 +63,5 @@ module "vsi-instance" {
   tags                 = []
   label                = var.label
   allow_deprecated_image = var.allow_deprecated_image
-  acl_rules            = []
+  security_group_rules = local.security_group_rules
 }
