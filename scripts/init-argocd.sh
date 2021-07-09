@@ -33,6 +33,8 @@ curl -sL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz -o helm.ta
 # login to cluster
 oc login -u apikey -p $IBMCLOUD_API_KEY $SERVER_URL
 
+oc delete job ibm-toolkit-install -n default || echo "No job to delete"
+
 # create job with terraform image
 helm template ibm-toolkit-install ibm-toolkit-install \
   --repo https://charts.cloudnativetoolkit.dev \
@@ -44,7 +46,3 @@ helm template ibm-toolkit-install ibm-toolkit-install \
   --set repo.url=https://github.com/cloud-native-toolkit/terraform-vsi-argocd-bootstrap \
   --set repo.path=terraform | \
   oc apply -f -
-
-if [[ $? -eq 0 ]]; then
-  shutdown -h now
-fi
