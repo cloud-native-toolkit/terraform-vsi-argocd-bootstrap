@@ -5,7 +5,8 @@ module "subnets" {
   region            = var.region
   ibmcloud_api_key  = var.ibmcloud_api_key
   vpc_name          = module.vpc.name
-  gateways          = module.gateways.gateways
+//  gateways          = module.gateways.gateways
+  gateways          = []
   _count            = var.vpc_subnet_count
   label             = "bootstrap"
 }
