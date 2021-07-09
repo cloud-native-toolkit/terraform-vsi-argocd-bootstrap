@@ -87,3 +87,7 @@ variable "vpc_subnet_count" {
 variable "vpc_name" {
   default = ""
 }
+
+variable "base_security_group_name" {
+  default = "thermal-pacifier-tapering-audience"
+}

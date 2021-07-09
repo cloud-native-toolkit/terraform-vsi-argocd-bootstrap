@@ -7,4 +7,5 @@ module "vpc" {
   name                = var.vpc_name
   ibmcloud_api_key    = var.ibmcloud_api_key
   provision           = false
+  base_security_group_name = var.base_security_group_name
 }
