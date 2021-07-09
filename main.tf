@@ -40,12 +40,6 @@ data local_file init_script {
   filename = local.dest_init_script_file
 }
 
-resource null_resource print_init_script {
-  provisioner "local-exec" {
-    command = "echo 'Init script: ${data.local_file.init_script.content}'"
-  }
-}
-
 module "vsi-instance" {
   source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-vsi.git?ref=v1.8.1"
 
@@ -59,7 +53,7 @@ module "vsi-instance" {
   profile_name         = var.profile_name
   kms_key_crn          = var.kms_key_crn
   kms_enabled          = var.kms_enabled
-  init_script          = data.local_file.init_script.content
+  init_script          = file(data.local_file.init_script.filename)
   create_public_ip     = false
   tags                 = []
   label                = var.label

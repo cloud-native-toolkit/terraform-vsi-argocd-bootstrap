@@ -20,3 +20,5 @@ cat "${SOURCE_FILE}" | \
   sed "s~ENV_CONFIG_TOKEN~${CONFIG_TOKEN}~g" | \
   sed "s~ENV_BOOTSTRAP_PATH~${BOOTSTRAP_PATH}~g" \
   > "${OUTPUT_FILE}"
+
+chmod +x "${OUTPUT_FILE}"
