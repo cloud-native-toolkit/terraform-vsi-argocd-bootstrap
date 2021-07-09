@@ -9,8 +9,6 @@ module "gitops_namespace" {
   application_token = module.gitops.application_token
   application_paths = module.gitops.application_paths
   name = var.namespace
-//  argocd_namespace = module.argocd-bootstrap.argocd_namespace
-//  argocd_service_account = module.argocd-bootstrap.argocd_service_account
-  argocd_namespace = "openshift-gitops"
-  argocd_service_account = "argocd-cluster"
+  argocd_namespace = module.argocd-bootstrap.argocd_namespace
+  argocd_service_account = module.argocd-bootstrap.argocd_service_account
 }
