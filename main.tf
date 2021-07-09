@@ -53,7 +53,7 @@ module "vsi-instance" {
   profile_name         = var.profile_name
   kms_key_crn          = var.kms_key_crn
   kms_enabled          = var.kms_enabled
-  init_script          = file(data.local_file.init_script.filename)
+  init_script          = data.local_file.init_script.content
   create_public_ip     = false
   tags                 = []
   label                = var.label
