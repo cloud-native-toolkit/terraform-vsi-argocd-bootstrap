@@ -34,12 +34,6 @@ resource null_resource setup_init_script {
   }
 }
 
-data local_file init_script {
-  depends_on = [null_resource.setup_init_script]
-
-  filename = local.dest_init_script_file
-}
-
 module "vsi-instance" {
   source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-vsi.git?ref=v1.8.1"
 
@@ -53,10 +47,47 @@ module "vsi-instance" {
   profile_name         = var.profile_name
   kms_key_crn          = var.kms_key_crn
   kms_enabled          = var.kms_enabled
-  init_script          = data.local_file.init_script.content
-  create_public_ip     = false
+  init_script          = file("${path.module}/scripts/init-script.sh")
+  create_public_ip     = true
   tags                 = []
   label                = var.label
   allow_deprecated_image = var.allow_deprecated_image
   security_group_rules = local.security_group_rules
+  allow_ssh_from       = "0.0.0.0/0"
+}
+
+module "vpcssh" {
+  source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-ssh.git"
+
+  resource_group_name = var.resource_group_name
+  region              = var.region
+  name_prefix         = var.vpc_name
+  ibmcloud_api_key    = var.ibmcloud_api_key
+  public_key          = ""
+  private_key         = ""
+  label               = "argocd-sshkey"
+}
+
+resource "null_resource" "deploy_argocd" {
+  depends_on = [null_resource.setup_init_script]
+
+  connection {
+    type        = "ssh"
+    user        = "root"
+    password    = ""
+    private_key = module.vpcssh.private_key
+    host        = module.vsi-instance.public_ips[0]
+  }
+
+  provisioner "file" {
+    source      = local.dest_init_script_file
+    destination = "/tmp"
+  }
+
+  provisioner "remote-exec" {
+    inline     = [
+      "chmod +x /tmp/*.sh",
+      "/tmp/init-argocd.sh"
+    ]
+  }
 }
