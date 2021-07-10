@@ -44,6 +44,18 @@ resource null_resource setup_init_script {
   }
 }
 
+module "vpcssh" {
+  source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-ssh.git"
+
+  resource_group_name = var.resource_group_name
+  region              = var.region
+  name_prefix         = var.vpc_name
+  ibmcloud_api_key    = var.ibmcloud_api_key
+  public_key          = var.public_key
+  private_key         = var.private_key
+  label               = "argocd-sshkey"
+}
+
 module "vsi-instance" {
   source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-vsi.git?ref=v1.8.1"
 
@@ -64,18 +76,7 @@ module "vsi-instance" {
   allow_deprecated_image = var.allow_deprecated_image
   security_group_rules = local.security_group_rules
   allow_ssh_from       = "0.0.0.0/0"
-}
-
-module "vpcssh" {
-  source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-ssh.git"
-
-  resource_group_name = var.resource_group_name
-  region              = var.region
-  name_prefix         = var.vpc_name
-  ibmcloud_api_key    = var.ibmcloud_api_key
-  public_key          = var.public_key
-  private_key         = var.private_key
-  label               = "argocd-sshkey"
+  ssh_key_id           = module.vpcssh.id
 }
 
 resource "null_resource" "deploy_argocd" {
