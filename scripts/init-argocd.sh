@@ -6,6 +6,7 @@ GITOPS_CONFIG_REPO_URL="ENV_CONFIG_REPO_URL"
 GITOPS_CONFIG_USERNAME="ENV_CONFIG_USERNAME"
 GITOPS_CONFIG_TOKEN="ENV_CONFIG_TOKEN"
 GITOPS_BOOTSTRAP_PATH="ENV_BOOTSTRAP_PATH"
+GITOPS_BRANCH="main"
 
 # install oc cli
 OPENSHIFT_CLI_VERSION="4.7.2"
@@ -44,5 +45,6 @@ helm template ibm-toolkit-install ibm-toolkit-install \
   --set config.gitops_config_token=$GITOPS_CONFIG_TOKEN \
   --set config.gitops_bootstrap_path=$GITOPS_BOOTSTRAP_PATH \
   --set repo.url=https://github.com/cloud-native-toolkit/terraform-vsi-argocd-bootstrap \
+  --set repo.branch=$GITOPS_BRANCH \
   --set repo.path=terraform | \
   oc apply -f -
