@@ -91,3 +91,11 @@ variable "vpc_name" {
 variable "base_security_group_name" {
   default = "thermal-pacifier-tapering-audience"
 }
+
+variable "public_key" {
+
+}
+
+variable "private_key" {
+
+}

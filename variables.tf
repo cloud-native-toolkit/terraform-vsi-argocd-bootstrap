@@ -119,3 +119,11 @@ variable "server_url" {
   type        = string
   description = "The url of the OCP cluster where ArgoCd will be deployed"
 }
+
+variable "private_key" {
+
+}
+
+variable "public_key" {
+
+}
