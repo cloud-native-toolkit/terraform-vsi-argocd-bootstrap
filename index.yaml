@@ -25,6 +25,32 @@ versions:
     #      refs:
     #        - source: github.com/ibm-garage-cloud/terraform-k8s-dashboard
     #          version: ">= 1.6.0"
+    variables: [{name: resource_group_name, type: string, description: The name of the IBM Cloud resource group where the VPC has been provisioned.}, {name: region, type: string, description: The IBM Cloud region where the cluster will be/has been installed.}, {name: ibmcloud_api_key, type: string, description: The IBM Cloud api token}, {name: vpc_name, type: string, description: The name of the vpc instance}, {name: label, type: string, description: The label for the server instance, default: server, optional: true}, {name: image_name, type: string, description: The name of the image to use for the virtual server, default: ibm-ubuntu-18-04-1-minimal-amd64-2, optional: true}, {name: vpc_subnet_count, type: number, description: Number of vpc subnets}, {name: vpc_subnets, type: "list(object({\n    label = string\n    id    = string\n    zone  = string\n  }))", description: List of subnets with labels}, {name: profile_name, type: string, description: Instance profile to use for the bastion instance, default: cx2-2x4, optional: true}, {name: kms_enabled, type: bool, description: Flag indicating that the volumes should be encrypted using a KMS., default: false, optional: true}, {name: kms_key_crn, type: string, description: The crn of the root key in the kms instance. Required if kms_enabled is true, default: "", optional: true}, {name: cluster_config_file, type: string, description: Cluster config file for Kubernetes cluster.}, {name: cluster_type, type: string, description: The type of cluster (openshift or kubernetes)}, {name: olm_namespace, type: string, description: Namespace where olm is installed}, {name: operator_namespace, type: string, description: Namespace where operators will be installed}, {name: ingress_subdomain, type: string, description: The subdomain for ingresses in the cluster, default: "", optional: true}, {name: gitops_repo_url, type: string, description: The GitOps repo url}, {name: git_username, type: string, description: The username used to access the GitOps repo}, {name: git_token, type: string, description: "The token used to access the GitOps repo\n  //  sensitive   = true"}, {name: bootstrap_path, type: string, description: The path to the bootstrap config for ArgoCD}, {name: allow_deprecated_image, type: bool, description: Flag indicating that deprecated images should be allowed for use in the Virtual Server instance. If the value is `false` and the image is deprecated then the module will fail to provision, default: true, optional: true}, {name: server_url, type: string, description: The url of the OCP cluster where ArgoCd will be deployed}, {name: private_key, type: string}, {name: public_key, type: string}, {name: bootstrap_branch, type: string, default: main, optional: true}]
+    version: v1.0.0
+    outputs:
+      - name: argocd_namespace
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: argocd_service_account
+        description: The namespace where the ArgoCD instance has been provisioned
+  - platforms:
+      - kubernetes
+      - ocp3
+      - ocp4
+    dependencies: []
+    #    - id: cluster
+    #      refs:
+    #        - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
+    #          version: ">= 1.7.0"
+    #        - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
+    #          version: ">= 2.0.0"
+    #    - id: namespace
+    #      refs:
+    #        - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
+    #          version: ">= 2.1.0"
+    #    - id: dashboard
+    #      refs:
+    #        - source: github.com/ibm-garage-cloud/terraform-k8s-dashboard
+    #          version: ">= 1.6.0"
     variables: []
     version: v0.0.0
 #    - name: cluster_type
