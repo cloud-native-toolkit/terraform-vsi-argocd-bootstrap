@@ -41,6 +41,7 @@ resource null_resource setup_init_script {
       CONFIG_TOKEN = var.git_token
       BOOTSTRAP_PATH = var.bootstrap_path
       BOOTSTRAP_BRANCH = var.bootstrap_branch
+      INGRESS_SUBDOMAIN = var.ingress_subdomain
     }
   }
 }

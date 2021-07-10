@@ -4,6 +4,7 @@ module "cluster" {
   server_url  = var.server_url
   login_token = var.login_token
   skip        = var.skip_login
+  ingress_subdomain = var.ingress_subdomain
 }
 
 module "dev_software_olm" {

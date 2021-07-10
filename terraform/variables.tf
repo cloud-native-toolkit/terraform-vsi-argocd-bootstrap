@@ -29,3 +29,7 @@ variable "gitops_config_token" {
 variable "gitops_bootstrap_path" {
   type        = string
 }
+
+variable "ingress_subdomain" {
+  default = ""
+}
