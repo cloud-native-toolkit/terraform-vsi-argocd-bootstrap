@@ -127,3 +127,7 @@ variable "private_key" {
 variable "public_key" {
 
 }
+
+variable "bootstrap_branch" {
+  default = "main"
+}

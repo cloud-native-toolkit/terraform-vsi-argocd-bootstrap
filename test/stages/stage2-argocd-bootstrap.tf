@@ -19,4 +19,5 @@ module "argocd-bootstrap" {
   vpc_subnets         = module.subnets.subnets
   public_key          = var.public_key
   private_key         = var.private_key
+  bootstrap_branch    = var.bootstrap_branch
 }
