@@ -92,7 +92,7 @@ resource "null_resource" "deploy_argocd" {
 
   provisioner "file" {
     source      = local.dest_init_script_file
-    destination = "/tmp"
+    destination = "/tmp/init-argocd.sh"
   }
 
   provisioner "remote-exec" {
