@@ -15,6 +15,16 @@ locals {
   }]
 }
 
+resource null_resource print_rg {
+  provisioner "local-exec" {
+    command = "echo 'Resource group: ${var.resource_group_name}'"
+  }
+}
+
+data ibm_resource_group rg {
+  name = var.resource_group_name
+}
+
 resource null_resource setup_init_script {
   triggers = {
     always_run = timestamp()
@@ -37,7 +47,7 @@ resource null_resource setup_init_script {
 module "vsi-instance" {
   source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-vsi.git?ref=v1.8.1"
 
-  resource_group_id    = var.resource_group_id
+  resource_group_id    = data.ibm_resource_group.rg.id
   region               = var.region
   ibmcloud_api_key     = var.ibmcloud_api_key
   vpc_name             = var.vpc_name
