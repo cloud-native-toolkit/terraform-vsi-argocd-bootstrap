@@ -21,7 +21,7 @@ variable "vpc_name" {
 variable "label" {
   type        = string
   description = "The label for the server instance"
-  default     = "server"
+  default     = "argocd"
 }
 
 variable "image_name" {
@@ -60,11 +60,6 @@ variable "kms_key_crn" {
   type        = string
   description = "The crn of the root key in the kms instance. Required if kms_enabled is true"
   default     = ""
-}
-
-variable "cluster_config_file" {
-  type        = string
-  description = "Cluster config file for Kubernetes cluster."
 }
 
 variable "cluster_type" {
@@ -118,14 +113,6 @@ variable "allow_deprecated_image" {
 variable "server_url" {
   type        = string
   description = "The url of the OCP cluster where ArgoCd will be deployed"
-}
-
-variable "private_key" {
-
-}
-
-variable "public_key" {
-
 }
 
 variable "bootstrap_branch" {
