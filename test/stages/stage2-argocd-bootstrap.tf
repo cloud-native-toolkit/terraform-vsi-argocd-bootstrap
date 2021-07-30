@@ -6,7 +6,6 @@ module "argocd-bootstrap" {
   resource_group_name = module.resource_group.name
   cluster_type        = module.dev_cluster.platform.type_code
   ingress_subdomain   = module.dev_cluster.platform.ingress
-  cluster_config_file = module.dev_cluster.config_file_path
   server_url          = module.dev_cluster.platform.server_url
   olm_namespace       = module.dev_software_olm.olm_namespace
   operator_namespace  = module.dev_software_olm.target_namespace
