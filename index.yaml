@@ -1,5 +1,6 @@
 id: github.com/cloud-native-toolkit/terraform-vsi-argocd-bootstrap
 name: vsi-argocd-bootstrap
+alias: argocd-bootstrap
 type: terraform
 description: Module to provision ArgoCD and bootstrap an application using the GitOps repo
 tags:
@@ -7,6 +8,176 @@ tags:
   - gitops
   - bootstrap
 versions:
+  - platforms:
+      - kubernetes
+      - ocp3
+      - ocp4
+    dependencies:
+      - id: resource_group
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-ibm-resource-group.git
+            version: ">= 1.0.0"
+      - id: cluster
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
+            version: ">= 1.7.0"
+          - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
+            version: ">= 1.0.0"
+          - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
+            version: ">= 2.0.0"
+          - source: github.com/cloud-native-toolkit/terraform-ocp-login
+            version: ">= 1.0.0"
+      - id: olm
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-k8s-olm
+            version: ">= 1.2.2"
+      - id: gitops
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-tools-gitops
+            version: ">= 1.2.0"
+      - id: subnets
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-ibm-vpc-subnets.git
+            version: ">= 1.0.0"
+    variables:
+      - name: resource_group_name
+        moduleRef:
+          id: resource_group
+          output: name
+        type: string
+        description: The name of the IBM Cloud resource group where the VPC has been provisioned.
+      - name: cluster_type
+        moduleRef:
+          id: cluster
+          output: platform.type_code
+        type: string
+        description: The type of cluster (openshift or kubernetes)
+      - name: ingress_subdomain
+        moduleRef:
+          id: cluster
+          output: platform.ingress
+        type: string
+        description: The subdomain for ingresses in the cluster
+        default: ""
+        optional: true
+      - name: server_url
+        moduleRef:
+          id: cluster
+          output: platform.server_url
+        type: string
+        description: The url of the OCP cluster where ArgoCd will be deployed
+      - name: olm_namespace
+        moduleRef:
+          id: olm
+          output: olm_namespace
+        type: string
+        description: Namespace where olm is installed
+      - name: operator_namespace
+        moduleRef:
+          id: olm
+          output: target_namespace
+        type: string
+        description: Namespace where operators will be installed
+      - name: gitops_repo_url
+        moduleRef:
+          id: gitops
+          output: config_repo_url
+        type: string
+        description: The GitOps repo url
+      - name: git_username
+        moduleRef:
+          id: gitops
+          output: config_username
+        type: string
+        description: The username used to access the GitOps repo
+      - name: git_token
+        moduleRef:
+          id: gitops
+          output: config_token
+        type: string
+        description: |-
+          The token used to access the GitOps repo
+            //  sensitive   = true
+      - name: bootstrap_path
+        moduleRef:
+          id: gitops
+          output: bootstrap_path
+        type: string
+        description: The path to the bootstrap config for ArgoCD
+      - name: bootstrap_branch
+        moduleRef:
+          id: gitops
+          output: bootstrap_branch
+        type: string
+        default: main
+        optional: true
+      - name: vpc_name
+        moduleRef:
+          id: subnets
+          output: vpc_name
+        type: string
+        description: The name of the vpc instance
+      - name: vpc_subnet_count
+        moduleRef:
+          id: subnets
+          output: count
+        type: number
+        description: Number of vpc subnets
+      - name: vpc_subnets
+        moduleRef:
+          id: subnets
+          output: subnets
+        type: |-
+          list(object({
+              label = string
+              id    = string
+              zone  = string
+            }))
+        description: List of subnets with labels
+      - name: region
+        scope: global
+        type: string
+        description: The IBM Cloud region where the cluster will be/has been installed.
+      - name: ibmcloud_api_key
+        scope: global
+        type: string
+        description: The IBM Cloud api token
+      - name: label
+        type: string
+        description: The label for the server instance
+        default: argocd
+        optional: true
+      - name: image_name
+        type: string
+        description: The name of the image to use for the virtual server
+        default: ibm-ubuntu-18-04-1-minimal-amd64-2
+        optional: true
+      - name: profile_name
+        type: string
+        description: Instance profile to use for the bastion instance
+        default: cx2-2x4
+        optional: true
+      - name: kms_enabled
+        type: bool
+        description: Flag indicating that the volumes should be encrypted using a KMS.
+        default: false
+        optional: true
+      - name: kms_key_crn
+        type: string
+        description: The crn of the root key in the kms instance. Required if kms_enabled is true
+        default: ""
+        optional: true
+      - name: allow_deprecated_image
+        type: bool
+        description: Flag indicating that deprecated images should be allowed for use in the Virtual Server instance. If the value is `false` and the image is deprecated then the module will fail to provision
+        default: true
+        optional: true
+    version: v1.1.1
+    outputs:
+      - name: argocd_namespace
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: argocd_service_account
+        description: The namespace where the ArgoCD instance has been provisioned
   - platforms:
       - kubernetes
       - ocp3
