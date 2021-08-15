@@ -17,7 +17,7 @@ module "dev_software_olm" {
 }
 
 module "argocd-bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.0.0"
+  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.2.0"
 
   cluster_type        = module.cluster.platform.type_code
   ingress_subdomain   = module.cluster.platform.ingress
