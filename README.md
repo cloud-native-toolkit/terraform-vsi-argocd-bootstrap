@@ -25,6 +25,7 @@ This module makes use of the output from other modules:
 - OLM - github.com/ibm-garage-cloud/terraform-software-olm.git
 - GitOps - github.com/cloud-native-toolkit/terraform-tools-gitops
 - Subnets - github.com/cloud-native-toolkit/terraform-ibm-vpc-subnets.git
+- Sealed Secret Certs - github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert.git
 
 ## Example usage
 
@@ -48,5 +49,7 @@ module "argocd_bootstrap" {
   vpc_subnet_count    = module.subnets.count
   vpc_subnets         = module.subnets.subnets
   bootstrap_branch    = module.gitops.bootstrap_branch
+  sealed_secret_cert  = module.cert.cert
+  sealed_secret_private_key = module.cert.private_key
 }
 ```

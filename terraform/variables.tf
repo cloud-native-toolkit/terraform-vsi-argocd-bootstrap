@@ -33,3 +33,11 @@ variable "gitops_bootstrap_path" {
 variable "ingress_subdomain" {
   default = ""
 }
+
+variable "sealed_secret_cert" {
+  default = ""
+}
+
+variable "sealed_secret_private_key" {
+  default = ""
+}

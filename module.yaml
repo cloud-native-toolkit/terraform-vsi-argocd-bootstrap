@@ -38,6 +38,10 @@ versions:
         refs:
           - source: github.com/cloud-native-toolkit/terraform-ibm-vpc-subnets.git
             version: ">= 1.0.0"
+      - id: cert
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
+            version: ">= 0.0.0"
     variables:
       - name: resource_group_name
         moduleRef:
@@ -99,3 +103,11 @@ versions:
         scope: global
       - name: ibmcloud_api_key
         scope: global
+      - name: sealed_secret_cert
+        moduleRef:
+          id: cert
+          output: cert
+      - name: sealed_secret_private_key
+        moduleRef:
+          id: cert
+          output: private_key
