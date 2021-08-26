@@ -10,3 +10,8 @@ output "argocd_service_account" {
   value       = "argocd-cluster-argocd-application-controller"
   depends_on = [module.vsi-instance]
 }
+
+output "sealed_secrets_cert" {
+  value = var.sealed_secret_cert
+  depends_on = [module.vsi-instance]
+}

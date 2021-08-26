@@ -17,4 +17,6 @@ module "argocd-bootstrap" {
   vpc_name            = module.subnets.vpc_name
   vpc_subnet_count    = module.subnets.count
   vpc_subnets         = module.subnets.subnets
+  sealed_secret_cert  = module.cert.cert
+  sealed_secret_private_key = module.cert.private_key
 }

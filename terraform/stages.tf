@@ -17,7 +17,7 @@ module "dev_software_olm" {
 }
 
 module "argocd-bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.0.0"
+  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.3.0"
 
   cluster_type        = module.cluster.platform.type_code
   ingress_subdomain   = module.cluster.platform.ingress
@@ -28,4 +28,6 @@ module "argocd-bootstrap" {
   git_username        = var.gitops_config_username
   git_token           = var.gitops_config_token
   bootstrap_path      = var.gitops_bootstrap_path
+  sealed_secret_cert  = var.sealed_secret_cert
+  sealed_secret_private_key = var.sealed_secret_private_key
 }

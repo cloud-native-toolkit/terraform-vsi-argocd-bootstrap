@@ -42,6 +42,8 @@ resource null_resource setup_init_script {
       BOOTSTRAP_PATH = var.bootstrap_path
       BOOTSTRAP_BRANCH = var.bootstrap_branch
       INGRESS_SUBDOMAIN = var.ingress_subdomain
+      SEALED_SECRET_CERT = var.sealed_secret_cert
+      SEALED_SECRET_PRIVATE_KEY = var.sealed_secret_private_key
     }
   }
 }

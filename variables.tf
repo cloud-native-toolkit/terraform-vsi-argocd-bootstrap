@@ -118,3 +118,15 @@ variable "server_url" {
 variable "bootstrap_branch" {
   default = "main"
 }
+
+variable "sealed_secret_cert" {
+  type        = string
+  description = "The certificate that will be used to encrypt sealed secrets. If not provided, a new one will be generated"
+  default     = ""
+}
+
+variable "sealed_secret_private_key" {
+  type        = string
+  description = "The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated"
+  default     = ""
+}
