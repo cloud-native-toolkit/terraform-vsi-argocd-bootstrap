@@ -22,6 +22,8 @@ resource null_resource print_rg {
 }
 
 data ibm_resource_group rg {
+  depends_on = [null_resource.print_rg]
+
   name = var.resource_group_name
 }
 

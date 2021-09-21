@@ -34,6 +34,7 @@ for deployment in "${DEPLOYMENTS[@]}"; do
 
   if [[ $count -eq 20 ]]; then
     echo "Timed out waiting for deployment to start: ${deployment}"
+    kubectl get all -n "${NAMESPACE}"
     exit 1
   fi
 
