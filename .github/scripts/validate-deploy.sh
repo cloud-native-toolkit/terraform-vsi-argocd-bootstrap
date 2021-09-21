@@ -11,6 +11,17 @@ export KUBECONFIG
 
 NAMESPACE=$(cat .namespace)
 
+GIT_REPO=$(cat git_repo)
+GIT_TOKEN=$(cat git_token)
+
+mkdir -p .testrepo
+
+git clone https://${GIT_TOKEN}@${GIT_REPO} .testrepo
+
+cd .testrepo || exit 1
+
+find . -name "*"
+
 oc get job -n default
 
 if ! oc get job ibm-toolkit-install -n default 1> /dev/null 2> /dev/null; then
