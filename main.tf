@@ -94,16 +94,7 @@ resource "null_resource" "deploy_argocd" {
     host        = module.vsi-instance.public_ips[0]
   }
 
-  provisioner "file" {
-    source      = local.dest_init_script_file
-    destination = "/tmp/init-argocd.sh"
-  }
-
   provisioner "remote-exec" {
-    inline     = [
-      "chmod +x /tmp/*.sh",
-      "/tmp/init-argocd.sh 1> /tmp/init-argocd.log 2> /tmp/init-argocd.log",
-      "cat /tmp/init-argocd.log"
-    ]
+    script     = local.dest_init_script_file
   }
 }
