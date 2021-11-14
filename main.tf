@@ -102,7 +102,8 @@ resource "null_resource" "deploy_argocd" {
   provisioner "remote-exec" {
     inline     = [
       "chmod +x /tmp/*.sh",
-      "/tmp/init-argocd.sh 1> /tmp/init-argocd.log 2> /tmp/init-argocd.log"
+      "/tmp/init-argocd.sh 1> /tmp/init-argocd.log 2> /tmp/init-argocd.log",
+      "cat /tmp/init-argocd.log"
     ]
   }
 }
