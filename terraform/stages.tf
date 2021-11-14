@@ -8,7 +8,7 @@ module "cluster" {
 }
 
 module "dev_software_olm" {
-  source = "github.com/cloud-native-toolkit/terraform-k8s-olm.git?ref=v1.3.1"
+  source = "github.com/cloud-native-toolkit/terraform-k8s-olm.git?ref=v1.3.2"
 
   cluster_config_file      = module.cluster.config_file_path
   cluster_version          = ""
@@ -17,7 +17,7 @@ module "dev_software_olm" {
 }
 
 module "argocd-bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.3.0"
+  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.4.0"
 
   cluster_type        = module.cluster.platform.type_code
   ingress_subdomain   = module.cluster.platform.ingress
