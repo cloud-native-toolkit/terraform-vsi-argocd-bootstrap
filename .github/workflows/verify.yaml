@@ -47,6 +47,7 @@ jobs:
           TF_VAR_bootstrap_branch: ${{ steps.extract_branch.outputs.branch }}
           TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
           IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
+          LOCK: branch
 
       - name: Verify destroy on ${{ matrix.platform }}
         uses: cloud-native-toolkit/action-module-verify-destroy@main
@@ -61,7 +62,7 @@ jobs:
           TF_VAR_bootstrap_branch: ${{ steps.extract_branch.outputs.branch }}
           TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
           IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
-
+          LOCK: branch
 
   release:
     #    if: ${{ github.event_name == 'push' }}
