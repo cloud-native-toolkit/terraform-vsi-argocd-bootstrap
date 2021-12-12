@@ -25,7 +25,8 @@ cd .testrepo || exit 1
 find . -name "*"
 
 echo "Printing ssh log"
-ssh -i -oStrictHostKeyChecking=accept-new .ssh_key "${PUBLIC_IP}" cat /tmp/init-argocd.log
+scp -i -oStrictHostKeyChecking=accept-new .ssh_key "${PUBLIC_IP}:/tmp/init-argocd.log" ./init-argocd.log
+cat init-argocd.log
 
 oc get job -n default
 
