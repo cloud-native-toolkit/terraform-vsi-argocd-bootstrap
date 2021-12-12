@@ -9,6 +9,8 @@ else
 fi
 export KUBECONFIG
 
+PUBLIC_IP=$(cat .public_ip)
+
 NAMESPACE=$(cat .namespace)
 
 GIT_REPO=$(cat git_repo)
@@ -21,6 +23,9 @@ git clone https://${GIT_TOKEN}@${GIT_REPO} .testrepo
 cd .testrepo || exit 1
 
 find . -name "*"
+
+echo "Printing ssh log"
+ssh -i .ssh_key "${PUBLIC_IP}" cat /tmp/init-argocd.log
 
 oc get job -n default
 

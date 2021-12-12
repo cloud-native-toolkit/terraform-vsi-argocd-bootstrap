@@ -20,3 +20,13 @@ module "argocd-bootstrap" {
   sealed_secret_cert  = module.cert.cert
   sealed_secret_private_key = module.cert.private_key
 }
+
+resource null_resource write_ssh_key {
+  provisioner "local-exec" {
+    command = "echo '${module.argocd-bootstrap.ssh_private_key}' > .ssh_key && chmod 700 .ssh_key"
+  }
+
+  provisioner "local-exec" {
+    command = "echo -n '${module.argocd-bootstrap.public_ips[0]}' > .public_ip"
+  }
+}

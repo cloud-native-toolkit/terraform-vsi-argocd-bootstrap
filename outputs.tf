@@ -15,3 +15,25 @@ output "sealed_secrets_cert" {
   value = var.sealed_secret_cert
   depends_on = [module.vsi-instance]
 }
+
+output "ssh_private_key" {
+  value = module.vpcssh.private_key
+}
+
+output "ssh_public_key" {
+  value = module.vpcssh.public_key
+}
+
+output "ssh_id" {
+  value = module.vpcssh.id
+}
+
+output "public_ips" {
+  description = "The public ips of the instances"
+  value       = module.vsi-instance.public_ips
+}
+
+output "private_ips" {
+  value = module.vsi-instance.private_ips
+  description = "The private ips of the instances"
+}
