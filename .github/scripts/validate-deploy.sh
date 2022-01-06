@@ -24,6 +24,11 @@ cd .testrepo || exit 1
 
 find . -name "*"
 
+echo "SSH key"
+cat ./.ssh_key
+
+chmod 700 ./.ssh_key
+
 echo "Printing ssh log"
 scp -v -oStrictHostKeyChecking=accept-new -i ./.ssh_key "${PUBLIC_IP}:/tmp/init-argocd.log" ./init-argocd.log
 cat init-argocd.log
