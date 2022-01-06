@@ -143,7 +143,7 @@ resource "null_resource" "deploy_argocd" {
   }
 }
 
-resource null_resource deploy_argocd {
+resource null_resource deploy_argocd2 {
   depends_on = [null_resource.generate_toolkit_install_yaml]
 
   provisioner "local-exec" {
