@@ -1,5 +1,5 @@
 module "cluster" {
-  source = "github.com/cloud-native-toolkit/terraform-ocp-login.git?ref=v1.1.0"
+  source = "github.com/cloud-native-toolkit/terraform-ocp-login.git?ref=v1.2.0"
 
   server_url  = var.server_url
   login_token = var.login_token
@@ -17,7 +17,7 @@ module "dev_software_olm" {
 }
 
 module "argocd-bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.4.2"
+  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.4.4"
 
   cluster_type        = module.cluster.platform.type_code
   ingress_subdomain   = module.cluster.platform.ingress
