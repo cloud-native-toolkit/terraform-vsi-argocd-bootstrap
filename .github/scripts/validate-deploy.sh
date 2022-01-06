@@ -24,7 +24,7 @@ cd .testrepo || exit 1
 
 find . -name "*"
 
-SSH_DIR="./ssh"
+SSH_DIR="./.ssh"
 SSH_ID="${SSH_DIR}/id_ssh_key"
 
 if [[ ! -f "${SSH_ID}" ]]; then
