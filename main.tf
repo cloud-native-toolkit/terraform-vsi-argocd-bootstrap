@@ -40,12 +40,12 @@ resource null_resource setup_init_script {
       SERVER_URL = var.server_url
       CONFIG_REPO_URL = var.gitops_repo_url
       CONFIG_USERNAME = var.git_username
-      CONFIG_TOKEN = var.git_token
+      CONFIG_TOKEN = nonsensitive(var.git_token)
       BOOTSTRAP_PATH = var.bootstrap_path
       BOOTSTRAP_BRANCH = var.bootstrap_branch
       INGRESS_SUBDOMAIN = var.ingress_subdomain
       SEALED_SECRET_CERT = var.sealed_secret_cert
-      SEALED_SECRET_PRIVATE_KEY = var.sealed_secret_private_key
+      SEALED_SECRET_PRIVATE_KEY = nonsensitive(var.sealed_secret_private_key)
     }
   }
 }
