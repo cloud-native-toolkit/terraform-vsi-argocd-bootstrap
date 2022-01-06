@@ -36,7 +36,7 @@ resource null_resource setup_init_script {
     command = "${path.module}/scripts/setup-init-script.sh ${local.dest_init_script_file}"
 
     environment = {
-      IBMCLOUD_API_KEY = nonsensitive(var.ibmcloud_api_key)
+      IBMCLOUD_API_KEY = var.ibmcloud_api_key
       SERVER_URL = var.server_url
       CONFIG_REPO_URL = var.gitops_repo_url
       CONFIG_USERNAME = var.git_username
