@@ -19,6 +19,7 @@ module "argocd-bootstrap" {
   vpc_subnets         = module.subnets.subnets
   sealed_secret_cert  = module.cert.cert
   sealed_secret_private_key = module.cert.private_key
+  terraform_repo_branch = var.terraform_repo_branch
 }
 
 resource local_file ssh_key {

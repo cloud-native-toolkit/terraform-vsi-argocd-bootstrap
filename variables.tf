@@ -130,3 +130,9 @@ variable "sealed_secret_private_key" {
   description = "The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated"
   default     = ""
 }
+
+variable "terraform_repo_branch" {
+  type        = string
+  description = "The branch to use for the terraform repo"
+  default     = "main"
+}

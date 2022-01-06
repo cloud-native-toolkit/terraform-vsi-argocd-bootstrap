@@ -43,7 +43,9 @@ jobs:
           echo "Org: $org"
           echo "::set-output name=org::$org"
 
-          echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF#refs/heads/})"
+          branch="$(echo ${GITHUB_REF#refs/heads/})"
+          echo "Branch: $branch"
+          echo "::set-output name=branch::$branch"
 
       - name: Verify deploy on ${{ matrix.platform }}
         uses: cloud-native-toolkit/action-module-verify-deploy@main
@@ -57,7 +59,7 @@ jobs:
           TF_VAR_git_repo: ${{ steps.variables.outputs.repo }}
           TF_VAR_public_key: ${{ secrets.public_key }}
           TF_VAR_private_key: ${{ secrets.private_key }}
-          TF_VAR_bootstrap_branch: ${{ steps.variables.outputs.branch }}
+          TF_VAR_terraform_repo_branch: ${{ steps.variables.outputs.branch }}
           TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
           IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
 

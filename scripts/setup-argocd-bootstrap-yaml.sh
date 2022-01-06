@@ -19,9 +19,10 @@ mkdir -p "${OUTPUT_DIR}"
   --set "config.gitops_config_username=${GITOPS_CONFIG_USERNAME}" \
   --set "config.gitops_config_token=${GITOPS_CONFIG_TOKEN}" \
   --set "config.gitops_bootstrap_path=${GITOPS_BOOTSTRAP_PATH}" \
+  --set "config.gitops_bootstrap_branch=${GITOPS_BOOTSTRAP_BRANCH}" \
   --set "config.ingress_subdomain=${INGRESS_SUBDOMAIN}" \
   --set "config.sealed_secret_cert=${SEALED_SECRET_CERT}" \
   --set "config.sealed_secret_private_key=${SEALED_SECRET_PRIVATE_KEY}" \
   --set "repo.url=https://github.com/cloud-native-toolkit/terraform-vsi-argocd-bootstrap" \
-  --set "repo.branch=${BOOTSTRAP_BRANCH}" \
+  --set "repo.branch=${TERRAFORM_REPO_BRANCH}" \
   --set repo.path=terraform > "${OUTPUT_FILE}"

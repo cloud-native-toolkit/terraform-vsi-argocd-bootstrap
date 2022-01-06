@@ -48,7 +48,8 @@ resource null_resource generate_toolkit_install_yaml {
       GITOPS_CONFIG_USERNAME = var.git_username
       GITOPS_CONFIG_TOKEN = nonsensitive(var.git_token)
       GITOPS_BOOTSTRAP_PATH = var.bootstrap_path
-      BOOTSTRAP_BRANCH = var.bootstrap_branch
+      GITOPS_BOOTSTRAP_BRANCH = var.bootstrap_branch
+      TERRAFORM_REPO_BRANCH = var.terraform_repo_branch
       INGRESS_SUBDOMAIN = var.ingress_subdomain
       SEALED_SECRET_CERT = var.sealed_secret_cert
       SEALED_SECRET_PRIVATE_KEY = nonsensitive(var.sealed_secret_private_key)
