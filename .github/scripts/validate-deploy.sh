@@ -16,6 +16,8 @@ NAMESPACE=$(cat .namespace)
 GIT_REPO=$(cat git_repo)
 GIT_TOKEN=$(cat git_token)
 
+SSH_DIR=$(cd "./.ssh"; pwd -P)
+
 mkdir -p .testrepo
 
 git clone https://${GIT_TOKEN}@${GIT_REPO} .testrepo
@@ -24,7 +26,6 @@ cd .testrepo || exit 1
 
 find . -name "*"
 
-SSH_DIR="./.ssh"
 SSH_ID="${SSH_DIR}/id_ssh_key"
 
 if [[ ! -f "${SSH_ID}" ]]; then
@@ -33,7 +34,7 @@ if [[ ! -f "${SSH_ID}" ]]; then
 fi
 
 echo "SSH key"
-cat ${SSH_ID}
+cat "${SSH_ID}"
 
 chmod -R 700 "${SSH_DIR}"
 
