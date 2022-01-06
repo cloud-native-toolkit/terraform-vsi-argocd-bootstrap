@@ -24,13 +24,21 @@ cd .testrepo || exit 1
 
 find . -name "*"
 
-echo "SSH key"
-cat ./.ssh_key
+SSH_DIR="./ssh"
+SSH_ID="${SSH_DIR}/id_ssh_key"
 
-chmod 700 ./.ssh_key
+if [[ ! -f "${SSH_ID}" ]]; then
+  echo ".ssh_key is missing: ${SSH_ID}"
+  exit 1
+fi
+
+echo "SSH key"
+cat ${SSH_ID}
+
+chmod -R 700 "${SSH_DIR}"
 
 echo "Printing ssh log"
-scp -v -oStrictHostKeyChecking=accept-new -i ./.ssh_key "${PUBLIC_IP}:/tmp/init-argocd.log" ./init-argocd.log
+scp -v -oStrictHostKeyChecking=accept-new -i "${SSH_ID}" "${PUBLIC_IP}:/tmp/init-argocd.log" ./init-argocd.log
 cat init-argocd.log
 
 oc get job -n default
