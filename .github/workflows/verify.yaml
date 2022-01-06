@@ -43,7 +43,12 @@ jobs:
           echo "Org: $org"
           echo "::set-output name=org::$org"
 
-          branch="$(echo ${GITHUB_REF#refs/heads/})"
+          pr_branch="${{ github.head_ref }}"
+          if [[ -n "${pr_branch}" ]]; then
+            branch="${pr_branch}"
+          else
+            branch="$(echo ${GITHUB_REF#refs/heads/})"
+          fi
           echo "Branch: $branch"
           echo "::set-output name=branch::$branch"
 
