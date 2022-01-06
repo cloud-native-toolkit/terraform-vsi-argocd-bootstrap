@@ -39,7 +39,7 @@ cat "${SSH_ID}"
 chmod -R 700 "${SSH_DIR}"
 
 echo "Printing ssh log"
-scp -v -oStrictHostKeyChecking=accept-new -i "${SSH_ID}" "${PUBLIC_IP}:/tmp/init-argocd.log" ./init-argocd.log
+scp -vv -oStrictHostKeyChecking=accept-new -i "${SSH_ID}" "${PUBLIC_IP}:/tmp/init-argocd.log" ./init-argocd.log
 cat init-argocd.log
 
 oc get job -n default
