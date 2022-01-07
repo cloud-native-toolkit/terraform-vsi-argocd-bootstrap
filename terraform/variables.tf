@@ -6,6 +6,7 @@ variable "server_url" {
 variable "login_token" {
   type        = string
   description = "The token used to log into the server"
+  sensitive   = true
 }
 
 variable "skip_login" {
@@ -24,6 +25,7 @@ variable "gitops_config_username" {
 
 variable "gitops_config_token" {
   type        = string
+  sensitive   = true
 }
 
 variable "gitops_bootstrap_path" {

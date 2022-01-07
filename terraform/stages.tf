@@ -1,3 +1,7 @@
+terraform {
+  required_version = ">= 0.15.0"
+}
+
 module "cluster" {
   source = "github.com/cloud-native-toolkit/terraform-ocp-login.git?ref=v1.2.0"
 
