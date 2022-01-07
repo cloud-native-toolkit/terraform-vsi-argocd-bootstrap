@@ -51,23 +51,23 @@ fi
 
 oc get all -n "${NAMESPACE}"
 
-IN="artifactory;sonarqube;dashboard"
+IN="deployment/${NAMESPACE}-dashboard-developer-dashboard;statefulset/${NAMESPACE}-artifactory-artifactory;deployment/${NAMESPACE}-sonarqube-sonarqube"
 
 IFS=';' read -ra DEPLOYMENTS <<< "$IN"
-for deployment in "${DEPLOYMENTS[@]}"; do
+for resource in "${DEPLOYMENTS[@]}"; do
   # process "$i"
   count=0
-  until kubectl get deployment "${deployment}" -n "${NAMESPACE}" 1> /dev/null 2> /dev/null || [[ $count -eq 20 ]]; do
-    echo "Waiting for deployment: ${deployment}"
+  until kubectl get "${resource}" -n "${NAMESPACE}" 1> /dev/null 2> /dev/null || [[ $count -eq 20 ]]; do
+    echo "Waiting for ${resource}"
     count=$((count + 1))
-    sleep 30
+    sleep 60
   done
 
   if [[ $count -eq 20 ]]; then
-    echo "Timed out waiting for deployment to start: ${deployment}"
+    echo "Timed out waiting for resource to start: ${resource}"
     kubectl get all -n "${NAMESPACE}"
     exit 1
   fi
 
-  kubectl rollout status deployment "${deployment}" -n "${NAMESPACE}"
+  kubectl rollout status "${resource}" -n "${NAMESPACE}"
 done
