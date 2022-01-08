@@ -51,7 +51,8 @@ fi
 
 oc get all -n "${NAMESPACE}"
 
-IN="deployment/${NAMESPACE}-dashboard-developer-dashboard;statefulset/${NAMESPACE}-artifactory-artifactory;deployment/${NAMESPACE}-sonarqube-sonarqube"
+#IN="deployment/${NAMESPACE}-dashboard-developer-dashboard;statefulset/${NAMESPACE}-artifactory-artifactory;deployment/${NAMESPACE}-sonarqube-sonarqube"
+IN="deployment/${NAMESPACE}-dashboard-developer-dashboard;statefulset/${NAMESPACE}-artifactory-artifactory"
 
 IFS=';' read -ra DEPLOYMENTS <<< "$IN"
 for resource in "${DEPLOYMENTS[@]}"; do
