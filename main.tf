@@ -68,14 +68,6 @@ resource null_resource setup_init_script {
     environment = {
       IBMCLOUD_API_KEY = var.ibmcloud_api_key
       SERVER_URL = var.server_url
-      CONFIG_REPO_URL = var.gitops_repo_url
-      CONFIG_USERNAME = var.git_username
-      CONFIG_TOKEN = nonsensitive(var.git_token)
-      BOOTSTRAP_PATH = var.bootstrap_path
-      BOOTSTRAP_BRANCH = var.bootstrap_branch
-      INGRESS_SUBDOMAIN = var.ingress_subdomain
-      SEALED_SECRET_CERT = var.sealed_secret_cert
-      SEALED_SECRET_PRIVATE_KEY = nonsensitive(var.sealed_secret_private_key)
     }
   }
 }
@@ -114,7 +106,6 @@ module "vsi-instance" {
 }
 
 resource "null_resource" "deploy_argocd" {
-  count = 0
   depends_on = [null_resource.setup_init_script]
 
   connection {
@@ -138,13 +129,14 @@ resource "null_resource" "deploy_argocd" {
   provisioner "remote-exec" {
     inline     = [
       "chmod +x /tmp/*.sh",
-      "/tmp/init-argocd.sh 1> /tmp/init-argocd.log 2> /tmp/init-argocd.log",
+      "/tmp/init-argocd.sh",
       "cat /tmp/init-argocd.log"
     ]
   }
 }
 
 resource null_resource deploy_argocd2 {
+  count = 0
   depends_on = [null_resource.generate_toolkit_install_yaml]
 
   provisioner "local-exec" {

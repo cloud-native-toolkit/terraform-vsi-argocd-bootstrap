@@ -2,20 +2,17 @@
 
 set -x
 
+RESOURCE_FILE="$1"
+
+if [[ -z "${RESOURCE_FILE}" ]]; then
+  RESOURCE_FILE="./argocd-bootstrap.yaml"
+fi
+
 IBMCLOUD_API_KEY="ENV_IBMCLOUD_API_KEY"
 SERVER_URL="ENV_SERVER_URL"
-GITOPS_CONFIG_REPO_URL="ENV_CONFIG_REPO_URL"
-GITOPS_CONFIG_USERNAME="ENV_CONFIG_USERNAME"
-GITOPS_CONFIG_TOKEN="ENV_CONFIG_TOKEN"
-GITOPS_BOOTSTRAP_PATH="ENV_BOOTSTRAP_PATH"
-BOOTSTRAP_BRANCH="ENV_BOOTSTRAP_BRANCH"
-INGRESS_SUBDOMAIN="ENV_INGRESS_SUBDOMAIN"
-SEALED_SECRET_CERT="ENV_SEALED_SECRET_CERT"
-SEALED_SECRET_PRIVATE_KEY="ENV_SEALED_SECRET_PRIVATE_KEY"
 
 # install oc cli
 OPENSHIFT_CLI_VERSION="4.7.2"
-HELM_VERSION="3.6.2"
 
 curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLI_VERSION}/openshift-client-linux.tar.gz --output oc-client.tar.gz && \
     mkdir tmp && \
@@ -27,32 +24,10 @@ curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_C
     rm -rf ./tmp && \
     rm oc-client.tar.gz
 
-curl -sL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz -o helm.tar.gz && \
-    mkdir tmp && \
-    cd tmp && \
-    tar xzf ../helm.tar.gz && \
-    mv linux-amd64/helm /usr/local/bin/helm &&
-    cd .. && \
-    rm -rf ./tmp &&
-    rm helm.tar.gz
-
 # login to cluster
 oc login -u apikey -p $IBMCLOUD_API_KEY $SERVER_URL
 
 oc delete job ibm-toolkit-install -n default || echo "No job to delete"
 
 # create job with terraform image
-helm template ibm-toolkit-install ibm-toolkit-install \
-  --repo https://charts.cloudnativetoolkit.dev \
-  --namespace default \
-  --set config.gitops_config_repo_url=$GITOPS_CONFIG_REPO_URL \
-  --set config.gitops_config_username=$GITOPS_CONFIG_USERNAME \
-  --set config.gitops_config_token=$GITOPS_CONFIG_TOKEN \
-  --set config.gitops_bootstrap_path=$GITOPS_BOOTSTRAP_PATH \
-  --set config.ingress_subdomain=$INGRESS_SUBDOMAIN \
-  --set config.sealed_secret_cert=$SEALED_SECRET_CERT \
-  --set config.sealed_secret_private_key=$SEALED_SECRET_PRIVATE_KEY \
-  --set repo.url=https://github.com/cloud-native-toolkit/terraform-vsi-argocd-bootstrap \
-  --set repo.branch=$BOOTSTRAP_BRANCH \
-  --set repo.path=terraform | \
-  oc apply -f -
+oc apply -f "${RESOURCE_FILE}"
