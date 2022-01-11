@@ -2,10 +2,12 @@
 
 set -x
 
+SOURCE_DIR=$(cd $(dirname "$0"); pwd -P)
+
 RESOURCE_FILE="$1"
 
 if [[ -z "${RESOURCE_FILE}" ]]; then
-  RESOURCE_FILE="./argocd-bootstrap.yaml"
+  RESOURCE_FILE="${SOURCE_DIR}/argocd-bootstrap.yaml"
 fi
 
 IBMCLOUD_API_KEY="ENV_IBMCLOUD_API_KEY"
