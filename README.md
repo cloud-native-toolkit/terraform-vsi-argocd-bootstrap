@@ -53,3 +53,4 @@ module "argocd_bootstrap" {
   sealed_secret_private_key = module.cert.private_key
 }
 ```
+
