@@ -1,7 +1,8 @@
 
 locals {
   tmp_dir = "${path.cwd}/.tmp"
-  dest_init_script_file = "${local.tmp_dir}/argocd-bootstrap/scripts/init-argocd.sh"
+  dest_init_script_dir = "${local.tmp_dir}/argocd-bootstrap/scripts"
+  dest_init_script_file = "${local.dest_init_script_dir}/init-argocd.sh"
   subnets = [ var.vpc_subnets[0] ]
   terraform_yaml = "${local.tmp_dir}/argocd-bootstrap/argocd-bootstrap.yaml"
   subnet_count = 1
@@ -63,7 +64,7 @@ resource null_resource setup_init_script {
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/scripts/setup-init-script.sh ${local.dest_init_script_file}"
+    command = "${path.module}/scripts/setup-init-script.sh ${local.dest_init_script_dir}"
 
     environment = {
       IBMCLOUD_API_KEY = var.ibmcloud_api_key
@@ -117,8 +118,8 @@ resource "null_resource" "deploy_argocd" {
   }
 
   provisioner "file" {
-    source      = local.dest_init_script_file
-    destination = "/tmp/init-argocd.sh"
+    source      = local.dest_init_script_dir
+    destination = "/tmp"
   }
 
   provisioner "file" {
@@ -132,18 +133,12 @@ resource "null_resource" "deploy_argocd" {
       "/tmp/init-argocd.sh"
     ]
   }
-}
 
-resource null_resource deploy_argocd2 {
-  count = 0
-  depends_on = [null_resource.generate_toolkit_install_yaml]
-
-  provisioner "local-exec" {
-    command = "${path.module}/scripts/deploy-argocd.sh ${local.terraform_yaml}"
-
-    environment = {
-      IBMCLOUD_API_KEY = var.ibmcloud_api_key
-      SERVER_URL = var.server_url
-    }
+  provisioner "remote-exec" {
+    when       = destroy
+    inline     = [
+      "chmod +x /tmp/*.sh",
+      "/tmp/destroy-argocd.sh"
+    ]
   }
 }

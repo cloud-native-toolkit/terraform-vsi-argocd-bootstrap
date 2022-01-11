@@ -32,6 +32,3 @@ fi
 oc login -u apikey -p $IBMCLOUD_API_KEY $SERVER_URL
 
 oc delete job ibm-toolkit-install -n default || echo "No job to delete"
-
-# create job with terraform image
-oc apply -f "${RESOURCE_FILE}"
