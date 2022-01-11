@@ -19,4 +19,17 @@ module "argocd-bootstrap" {
   vpc_subnets         = module.subnets.subnets
   sealed_secret_cert  = module.cert.cert
   sealed_secret_private_key = module.cert.private_key
+  terraform_repo_branch = var.terraform_repo_branch
+}
+
+resource local_file ssh_key {
+  filename = "${path.cwd}/.ssh/id_ssh_key"
+
+  content = nonsensitive(module.argocd-bootstrap.ssh_private_key)
+}
+
+resource local_file public_ip {
+  filename = "${path.cwd}/.public_ip"
+
+  content = module.argocd-bootstrap.public_ips[0]
 }

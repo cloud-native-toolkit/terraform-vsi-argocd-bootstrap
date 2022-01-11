@@ -1,5 +1,9 @@
+terraform {
+  required_version = ">= 0.15.0"
+}
+
 module "cluster" {
-  source = "github.com/cloud-native-toolkit/terraform-ocp-login.git?ref=v1.1.0"
+  source = "github.com/cloud-native-toolkit/terraform-ocp-login.git?ref=v1.2.0"
 
   server_url  = var.server_url
   login_token = var.login_token
@@ -8,7 +12,7 @@ module "cluster" {
 }
 
 module "dev_software_olm" {
-  source = "github.com/cloud-native-toolkit/terraform-k8s-olm.git?ref=v1.3.1"
+  source = "github.com/cloud-native-toolkit/terraform-k8s-olm.git?ref=v1.3.2"
 
   cluster_config_file      = module.cluster.config_file_path
   cluster_version          = ""
@@ -17,7 +21,7 @@ module "dev_software_olm" {
 }
 
 module "argocd-bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.3.0"
+  source = "github.com/cloud-native-toolkit/terraform-tools-argocd-bootstrap.git?ref=v1.5.1"
 
   cluster_type        = module.cluster.platform.type_code
   ingress_subdomain   = module.cluster.platform.ingress

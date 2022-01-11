@@ -103,3 +103,6 @@ variable "private_key" {
 variable "bootstrap_branch" {
   default = "main"
 }
+
+variable "terraform_repo_branch" {
+}
