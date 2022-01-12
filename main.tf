@@ -109,12 +109,20 @@ module "vsi-instance" {
 resource "null_resource" "deploy_argocd" {
   depends_on = [null_resource.setup_init_script]
 
-  connection {
+  triggers = {
     type        = "ssh"
     user        = "root"
     password    = ""
     private_key = module.vpcssh.private_key
     host        = module.vsi-instance.public_ips[0]
+  }
+
+  connection {
+    type        = self.triggers.type
+    user        = self.triggers.user
+    password    = self.triggers.password
+    private_key = self.triggers.private_key
+    host        = self.triggers.host
   }
 
   provisioner "file" {
