@@ -21,4 +21,6 @@ cat "${MODULE_DIR}/scripts/${DESTROY_FILE}" | \
   sed "s~ENV_SERVER_URL~${SERVER_URL}~g" \
   > "${OUTPUT_DIR}/${DESTROY_FILE}"
 
+echo "Output dir contents"
+ls "${OUTPUT_DIR}"
 chmod +x "${OUTPUT_DIR}/*.sh"
