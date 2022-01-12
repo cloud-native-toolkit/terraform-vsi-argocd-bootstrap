@@ -23,4 +23,4 @@ cat "${MODULE_DIR}/scripts/${DESTROY_FILE}" | \
 
 echo "Output dir contents"
 ls "${OUTPUT_DIR}"
-chmod +x "${OUTPUT_DIR}/*.sh"
+chmod +x "${OUTPUT_DIR}"/*.sh
