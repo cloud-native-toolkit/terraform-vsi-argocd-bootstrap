@@ -83,6 +83,7 @@ module "vpcssh" {
 
 module "vsi-instance" {
   source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-vsi.git?ref=v1.11.0"
+  depends_on = [null_resource.setup_init_script]
 
   resource_group_id    = data.ibm_resource_group.rg.id
   region               = var.region
