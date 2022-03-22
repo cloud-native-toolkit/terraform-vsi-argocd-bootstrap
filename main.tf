@@ -3,7 +3,6 @@ locals {
   tmp_dir = "${path.cwd}/.tmp/vsi-bootstrap"
   dest_values_yaml = "${local.tmp_dir}/values.yaml"
   dest_cloud_init = "${local.tmp_dir}/cloud-init.yaml"
-  dest_init_script_file = "${local.tmp_dir}/argocd-bootstrap/scripts/init-argocd.sh"
   subnets = [ var.vpc_subnets[0] ]
   terraform_yaml = "${local.tmp_dir}/argocd-bootstrap/argocd-bootstrap.yaml"
   subnet_count = 1
