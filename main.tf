@@ -1,6 +1,8 @@
 
 locals {
-  tmp_dir = "${path.cwd}/.tmp"
+  tmp_dir = "${path.cwd}/.tmp/vsi-bootstrap"
+  dest_values_yaml = "${local.tmp_dir}/values.yaml"
+  dest_cloud_init = "${local.tmp_dir}/cloud-init.yaml"
   dest_init_script_file = "${local.tmp_dir}/argocd-bootstrap/scripts/init-argocd.sh"
   subnets = [ var.vpc_subnets[0] ]
   terraform_yaml = "${local.tmp_dir}/argocd-bootstrap/argocd-bootstrap.yaml"
@@ -31,41 +33,39 @@ data ibm_resource_group rg {
 module setup_clis {
   source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
 
-  clis = ["helm"]
+  clis = ["yq"]
 }
 
-resource null_resource generate_toolkit_install_yaml {
-  triggers = {
-    always_run = timestamp()
-  }
+resource local_file values_yaml {
+  filename = local.dest_values_yaml
 
-  provisioner "local-exec" {
-    command = "${path.module}/scripts/setup-argocd-bootstrap-yaml.sh ${local.terraform_yaml}"
-
-    environment = {
-      BIN_DIR = module.setup_clis.bin_dir
-      GITOPS_CONFIG_REPO_URL = var.gitops_repo_url
-      GITOPS_CONFIG_USERNAME = var.git_username
-      GITOPS_CONFIG_TOKEN = nonsensitive(var.git_token)
-      GITOPS_BOOTSTRAP_PATH = var.bootstrap_path
-      GITOPS_BOOTSTRAP_BRANCH = var.bootstrap_branch
-      TERRAFORM_REPO_BRANCH = var.terraform_repo_branch
-      INGRESS_SUBDOMAIN = var.ingress_subdomain
-      SEALED_SECRET_CERT = var.sealed_secret_cert
-      SEALED_SECRET_PRIVATE_KEY = nonsensitive(var.sealed_secret_private_key)
+  content = yamlencode({
+    config = {
+      gitops_config_repo_url = var.gitops_repo_url
+      gitops_config_username = var.git_username
+      gitops_config_token = nonsensitive(var.git_token)
+      gitops_bootstrap_path = var.bootstrap_path
+      gitops_bootstrap_branch = var.bootstrap_branch
+      ingress_subdomain = var.ingress_subdomain
+      sealed_secret_cert = var.sealed_secret_cert
+      sealed_secret_private_key = nonsensitive(var.sealed_secret_private_key)
     }
-  }
+    repo = {
+      url = "https://github.com/cloud-native-toolkit/terraform-vsi-argocd-bootstrap"
+      path = "terraform"
+      branch = var.bootstrap_branch
+    }
+  })
 }
 
 resource null_resource setup_init_script {
-  triggers = {
-    always_run = timestamp()
-  }
+  depends_on = [local_file.values_yaml]
 
   provisioner "local-exec" {
-    command = "${path.module}/scripts/setup-init-script.sh ${local.dest_init_script_file}"
+    command = "${path.module}/scripts/setup-init-script.sh ${local.dest_values_yaml} ${local.dest_cloud_init}"
 
     environment = {
+      BIN_DIR = module.setup_clis.bin_dir
       IBMCLOUD_API_KEY = var.ibmcloud_api_key
       SERVER_URL = var.server_url
     }
@@ -95,55 +95,12 @@ module "vsi-instance" {
   profile_name         = var.profile_name
   kms_key_crn          = var.kms_key_crn
   kms_enabled          = var.kms_enabled
-  init_script          = file("${path.module}/scripts/init-script.sh")
+  init_script          = file(local.dest_cloud_init)
   create_public_ip     = true
   tags                 = []
   label                = var.label
   allow_deprecated_image = var.allow_deprecated_image
   security_group_rules = local.security_group_rules
-  allow_ssh_from       = "0.0.0.0/0"
+  allow_ssh_from       = var.allow_ssh_from
   ssh_key_id           = module.vpcssh.id
-}
-
-resource "null_resource" "deploy_argocd" {
-  depends_on = [null_resource.setup_init_script]
-
-  connection {
-    type        = "ssh"
-    user        = "root"
-    password    = ""
-    private_key = module.vpcssh.private_key
-    host        = module.vsi-instance.public_ips[0]
-  }
-
-  provisioner "file" {
-    source      = local.dest_init_script_file
-    destination = "/tmp/init-argocd.sh"
-  }
-
-  provisioner "file" {
-    source      = local.terraform_yaml
-    destination = "/tmp/argocd-bootstrap.yaml"
-  }
-
-  provisioner "remote-exec" {
-    inline     = [
-      "chmod +x /tmp/*.sh",
-      "/tmp/init-argocd.sh"
-    ]
-  }
-}
-
-resource null_resource deploy_argocd2 {
-  count = 0
-  depends_on = [null_resource.generate_toolkit_install_yaml]
-
-  provisioner "local-exec" {
-    command = "${path.module}/scripts/deploy-argocd.sh ${local.terraform_yaml}"
-
-    environment = {
-      IBMCLOUD_API_KEY = var.ibmcloud_api_key
-      SERVER_URL = var.server_url
-    }
-  }
 }

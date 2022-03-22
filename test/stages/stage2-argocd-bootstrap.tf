@@ -20,6 +20,7 @@ module "argocd-bootstrap" {
   sealed_secret_cert  = module.cert.cert
   sealed_secret_private_key = module.cert.private_key
   terraform_repo_branch = var.terraform_repo_branch
+  allow_ssh_from = "0.0.0.0/0"
 }
 
 resource local_file ssh_key {

@@ -136,3 +136,9 @@ variable "terraform_repo_branch" {
   description = "The branch to use for the terraform repo"
   default     = "main"
 }
+
+variable "allow_ssh_from" {
+  type        = string
+  description = "The IP addresses from which ssh connections will be allowed"
+  default     = ""
+}
