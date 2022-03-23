@@ -3,21 +3,18 @@
 SCRIPT_DIR=$(cd $(dirname "$0"); pwd -P)
 MODULE_DIR=$(cd "${SCRIPT_DIR}/.."; pwd -P)
 
-VALUES_FILE="$1"
-OUTPUT_FILE="$2"
+INPUT=$(tee)
+
+BIN_DIR=$(echo "${INPUT}" | grep "bin_dir" | sed -E 's/.*"bin_dir": ?"([^"]+)".*/\1/g')
 
 export PATH="${BIN_DIR}:${PATH}"
 
-OUTPUT_DIR=$(dirname "${OUTPUT_FILE}")
-mkdir -p "${OUTPUT_DIR}"
+eval "$(echo "${INPUT}" | jq -r '@sh "IBMCLOUD_API_KEY=\(.ibmcloud_api_key) SERVER_URL=\(.server_url) VALUES_CONTENT=\(.values_content)"')"
 
 SOURCE_FILE="${MODULE_DIR}/config/cloud-init.yaml"
 
-cat "${SOURCE_FILE}" | \
-  sed -E "s~CLUSTER_PASSWORD=.*~CLUSTER_PASSWORD=\"${IBMCLOUD_API_KEY}\"~g" | \
-  sed -E "s~SERVER_URL=.*~SERVER_URL=\"${SERVER_URL}\"~g" \
-  > "${OUTPUT_FILE}"
+export VALUES_CONTENT
 
-export VALUES_CONTENT=$(cat "${VALUES_FILE}")
+INIT_SCRIPT=$(cat "${SOURCE_FILE}" | sed -E "s~CLUSTER_PASSWORD=.*~CLUSTER_PASSWORD=\"${IBMCLOUD_API_KEY}\"~g" | sed -E "s~SERVER_URL=.*~SERVER_URL=\"${SERVER_URL}\"~g" | yq4 e -P '.write_files[0].content = ENV(VALUES_CONTENT)}' -)
 
-yq4 e -i -P '.write_files[0].content = ENV(VALUES_CONTENT)}' "${OUTPUT_FILE}"
+jq -n --arg INIT_SCRIPT "${INIT_SCRIPT}" '{"init_script": $INIT_SCRIPT}'

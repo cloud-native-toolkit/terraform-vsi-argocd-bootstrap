@@ -1,8 +1,6 @@
 
 locals {
   tmp_dir = "${path.cwd}/.tmp/vsi-bootstrap"
-  dest_values_yaml = "${local.tmp_dir}/values.yaml"
-  dest_cloud_init = "${local.tmp_dir}/cloud-init.yaml"
   subnets = [ var.vpc_subnets[0] ]
   terraform_yaml = "${local.tmp_dir}/argocd-bootstrap/argocd-bootstrap.yaml"
   subnet_count = 1
@@ -32,42 +30,34 @@ data ibm_resource_group rg {
 module setup_clis {
   source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
 
-  clis = ["yq"]
+  clis = ["jq", "yq"]
 }
 
-resource local_file values_yaml {
-  filename = local.dest_values_yaml
+data external setup_init_script {
 
-  content = yamlencode({
-    config = {
-      gitops_config_repo_url = var.gitops_repo_url
-      gitops_config_username = var.git_username
-      gitops_config_token = nonsensitive(var.git_token)
-      gitops_bootstrap_path = var.bootstrap_path
-      gitops_bootstrap_branch = var.bootstrap_branch
-      ingress_subdomain = var.ingress_subdomain
-      sealed_secret_cert = var.sealed_secret_cert
-      sealed_secret_private_key = nonsensitive(var.sealed_secret_private_key)
-    }
-    repo = {
-      url = "https://github.com/cloud-native-toolkit/terraform-vsi-argocd-bootstrap"
-      path = "terraform"
-      branch = var.bootstrap_branch
-    }
-  })
-}
+  program = ["bash", "${path.module}/scripts/setup-init-script.sh"]
 
-resource null_resource setup_init_script {
-  depends_on = [local_file.values_yaml]
-
-  provisioner "local-exec" {
-    command = "${path.module}/scripts/setup-init-script.sh ${local.dest_values_yaml} ${local.dest_cloud_init}"
-
-    environment = {
-      BIN_DIR = module.setup_clis.bin_dir
-      IBMCLOUD_API_KEY = var.ibmcloud_api_key
-      SERVER_URL = var.server_url
-    }
+  query = {
+    bin_dir = module.setup_clis.bin_dir
+    ibmcloud_api_key = var.ibmcloud_api_key
+    server_url = var.server_url
+    values_content = yamlencode({
+      config = {
+        gitops_config_repo_url = var.gitops_repo_url
+        gitops_config_username = var.git_username
+        gitops_config_token = nonsensitive(var.git_token)
+        gitops_bootstrap_path = var.bootstrap_path
+        gitops_bootstrap_branch = var.bootstrap_branch
+        ingress_subdomain = var.ingress_subdomain
+        sealed_secret_cert = var.sealed_secret_cert
+        sealed_secret_private_key = nonsensitive(var.sealed_secret_private_key)
+      }
+      repo = {
+        url = "https://github.com/cloud-native-toolkit/terraform-vsi-argocd-bootstrap"
+        path = "terraform"
+        branch = var.bootstrap_branch
+      }
+    })
   }
 }
 
@@ -83,7 +73,6 @@ module "vpcssh" {
 
 module "vsi-instance" {
   source = "github.com/cloud-native-toolkit/terraform-ibm-vpc-vsi.git?ref=v1.11.0"
-  depends_on = [null_resource.setup_init_script]
 
   resource_group_id    = data.ibm_resource_group.rg.id
   region               = var.region
@@ -95,7 +84,7 @@ module "vsi-instance" {
   profile_name         = var.profile_name
   kms_key_crn          = var.kms_key_crn
   kms_enabled          = var.kms_enabled
-  init_script          = file(local.dest_cloud_init)
+  init_script          = data.external.setup_init_script.result.init_script
   create_public_ip     = true
   tags                 = []
   label                = var.label
