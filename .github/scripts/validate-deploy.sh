@@ -49,10 +49,14 @@ if ! oc get job ibm-toolkit-install -n default 1> /dev/null 2> /dev/null; then
   exit 1
 fi
 
+echo "Wait for ibm-toolkit-install job to complete"
+oc wait --for=condition=complete job ibm-toolkit-install -n default
+
+echo "Getting all resources in target namespace ${NAMESPACE}"
 oc get all -n "${NAMESPACE}"
 
 #IN="deployment/${NAMESPACE}-dashboard-developer-dashboard;statefulset/${NAMESPACE}-artifactory-artifactory;deployment/${NAMESPACE}-sonarqube-sonarqube"
-IN="deployment/${NAMESPACE}-dashboard-developer-dashboard;statefulset/${NAMESPACE}-artifactory-artifactory"
+IN="deployment/dashboard-developer-dashboard;statefulset/artifactory-artifactory"
 
 IFS=';' read -ra DEPLOYMENTS <<< "$IN"
 for resource in "${DEPLOYMENTS[@]}"; do
